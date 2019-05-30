@@ -1,3 +1,7 @@
+Remember to change to the Git repository
+
+cd Documents/Processing/Ty Research/Ty-Projects
+
 Git Commands	
 
 git add -A	             Add all contents
