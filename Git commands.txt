@@ -1,0 +1,5 @@
+Git Commands	
+
+git add -A	             Add all contents
+git commit -m "message"	     Add changes
+git push	             Push changes to Github
