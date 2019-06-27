@@ -1,13 +1,13 @@
 class Robot {
-  float x, y, d, vl, vr, theta, r, dTheta, dist;
+  float x, y, d, vl, vr, theta, r, dTheta, dist, tarX, tarY;
   boolean turn= false;
   //Inputs to the constructor are x, y, and d in meters, but x and y variables are in px
   Robot(float _x, float _y, float _d) {
     x = _x*pxPerM;
     y = _y*pxPerM;
     d = _d*pxPerM;
-    vr = 1;
-    vl = 1;
+    vr = -0.1;
+    vl = 0.11;
     theta = random(PI);
   }
   void measure() {
@@ -20,14 +20,29 @@ class Robot {
       ym+=vm*sin(theta+PI/2);
       dist++;
       stroke(255, 0, 0);//draw light
-      point(xm,ym);
+      point(xm, ym);
       //ellipse(xm, ym, 2, 2);
     }
   }
   void update() {
     //take measurement 
     measure();
-    avoidObstacles();
+    //Point towards the target
+    float dy = tarY - y;
+    float dx = tarX - x;
+    float tarAng = atan2(dy, dx);
+    if (theta>PI) theta = -PI;
+    if (theta<-PI) theta = PI;
+    float angDiff = tarAng - theta;
+    if (angDiff<0) {
+      vr = +0.1;
+      vl = -0.11;
+    }
+    if (angDiff>0) {
+      vr = -0.1;
+      vl = 0.11;
+    }
+    //avoidObstacles();
     //Step 1: find circle on which robot is turning
     if (vl!=vr)r=(d/2)*(vl+vr)/(-vr+vl);
     //else r = 10000000;
@@ -46,7 +61,7 @@ class Robot {
     //display robot
     pushMatrix();
     translate(x, y);
-    text(dist, 0, 40);//print distance
+    text(angDiff, 0, 40);//print distance
     rotate(theta);
     fill(0);
     stroke(0);
@@ -59,18 +74,22 @@ class Robot {
     line(-d/2, 0, -d/2, vr*50);
     popMatrix();
   }
-  void avoidObstacles() {
-    if (dist<300||turn) {
-      turn=true;
-      vl=1;
-      vr=-1.1;
-    } else {
-      println(frameCount);
-      vr=1.001;
-      vl=1;
-    }
-    if (dist>400) {
-      turn=false;
-    }
+  void setTarget(float _tarX, float _tarY) {
+    tarX = _tarX;
+    tarY = _tarY;
   }
+  //void avoidObstacles() {
+  //  if (dist<300||turn) {
+  //    turn=true;
+  //    vl=1;
+  //    vr=-1.1;
+  //  } else {
+  //    println(frameCount);
+  //    vr=1.001;
+  //    vl=1;
+  //  }
+  //  if (dist>400) {
+  //    turn=false;
+  //  }
+  //}
 }
