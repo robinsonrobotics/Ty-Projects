@@ -2,6 +2,6 @@ Ty tasks
 
 Check for collisions with wall and make robot stop if it crashes
 Fix problem when vl = vr and vl = -vr
-Figure out a way to measure distance to other robots
-Change all measurements to be in meters 
+Fix problem where robot drives to the side
+Fix problem with angle wrap around 
 

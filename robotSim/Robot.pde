@@ -1,5 +1,5 @@
 class Robot {
-  float x, y, d, vl, vr, theta, r, dTheta, dist, tarX, tarY;
+  float x, y, d, vl, vr, theta, r, dTheta, dist, tarX, tarY,lastAng;
   boolean turn= false;
   //Inputs to the constructor are x, y, and d in meters, but x and y variables are in px
   Robot(float _x, float _y, float _d) {
@@ -8,7 +8,7 @@ class Robot {
     d = _d*pxPerM;
     vr = -0.1;
     vl = 0.11;
-    theta = random(PI);
+    theta = 2.5;
   }
   void measure() {
     float xm = x;//x location of measurement particle
@@ -16,8 +16,8 @@ class Robot {
     float vm = 1;
     dist = 0;//keep track of distance light has traveled
     while (xm<width&&xm>0&&ym<height&&ym>0&&brightness(map.get(int(xm), int(ym)))!=0) {
-      xm+=vm*cos(theta+PI/2);//It would be nice if the angle was right and we didn't have to add 90 degrees
-      ym+=vm*sin(theta+PI/2);
+      xm+=vm*cos(theta);//It would be nice if the angle was right and we didn't have to add 90 degrees
+      ym+=vm*sin(theta);
       dist++;
       stroke(255, 0, 0);//draw light
       point(xm, ym);
@@ -34,6 +34,10 @@ class Robot {
     if (theta>PI) theta = -PI;
     if (theta<-PI) theta = PI;
     float angDiff = tarAng - theta;
+    if(lastAng>0&&tarAng<0){//if the target was positive the last time through and now its negative
+    tarAng=tarAng+2*PI;
+  }
+  if(abs(angDiff)>0.1){
     if (angDiff<0) {
       vr = +0.1;
       vl = -0.11;
@@ -42,6 +46,14 @@ class Robot {
       vr = -0.1;
       vl = 0.11;
     }
+  }
+  else{
+    if(dist(x,y,tarX,tarY)>10){
+      vr+=1;
+      vl+=1;
+    }
+  }
+    lastAng=tarAng;
     //avoidObstacles();
     //Step 1: find circle on which robot is turning
     if (vl!=vr)r=(d/2)*(vl+vr)/(-vr+vl);
@@ -62,7 +74,7 @@ class Robot {
     pushMatrix();
     translate(x, y);
     text(angDiff, 0, 40);//print distance
-    rotate(theta);
+    rotate(theta-PI/2);
     fill(0);
     stroke(0);
     ellipse(0, 0, d, d);
@@ -73,7 +85,9 @@ class Robot {
     line(d/2, 0, d/2, vl*50);
     line(-d/2, 0, -d/2, vr*50);
     popMatrix();
-  }
+   stroke(0,200,0);
+    line(x,y,x+300*cos(tarAng),y+300*sin(tarAng));
+}
   void setTarget(float _tarX, float _tarY) {
     tarX = _tarX;
     tarY = _tarY;
