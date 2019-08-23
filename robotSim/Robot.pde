@@ -37,20 +37,27 @@ class Robot {
     if(lastAng>0&&tarAng<0){//if the target was positive the last time through and now its negative
     tarAng=tarAng+2*PI;
   }
-  if(abs(angDiff)>0.1){
+  println(angDiff);
+  if(abs(angDiff)>0.001){
     if (angDiff<0) {
-      vr = +0.1;
-      vl = -0.11;
-    }
+      vr = 0.1;
+      vl = -0.10001;
+    //println(vl,vr);
+  }
     if (angDiff>0) {
       vr = -0.1;
-      vl = 0.11;
+      vl = 0.10001;
+      //println(vl,vr);
     }
+  //if(abs(angDiff)<0.001){
+  // vr=1;
+  //    vl=1.0001;
   }
+
   else{
     if(dist(x,y,tarX,tarY)>10){
-      vr+=1;
-      vl+=1;
+      vr=1;
+      vl=1.0001;
     }
   }
     lastAng=tarAng;
